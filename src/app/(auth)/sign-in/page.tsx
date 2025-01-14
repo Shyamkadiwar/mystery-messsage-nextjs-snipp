@@ -1,60 +1,64 @@
-'use client'
+'use client';
 
-import { Button } from '@/components/ui/button'
-import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Toast } from '@/components/ui/toast'
-import { useToast } from '@/hooks/use-toast'
-import { signInSchema } from '@/schemas/signInSchema'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { signIn } from 'next-auth/react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { Button } from '@/components/ui/button';
+import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { signInSchema } from '@/schemas/signInSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signIn } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-
-function page() {
-
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+function SignInPage() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
   const form = useForm({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      identifier: "",
-      password: ""
-    }
-  })
+      identifier: '',
+      password: '',
+    },
+  });
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+    setIsSubmitting(true);
+
     const result = await signIn('credentials', {
       redirect: false,
       identifier: data.identifier,
-      password: data.password
-    })
+      password: data.password,
+    });
+
+    setIsSubmitting(false);
 
     if (result?.error) {
       if (result.error === 'CredentialSignin') {
         toast({
           title: 'Login Failed',
           description: 'Incorrect username or password',
-          variant: 'destructive'
-        })
-      }
-      else {
+          variant: 'destructive',
+        });
+      } else {
         toast({
           title: 'Error',
           description: result.error,
-          variant: 'destructive'
-        })
+          variant: 'destructive',
+        });
       }
-      if (result?.url) {
-        router.replace('/dashboard')
-      }
+    } else if (result?.url) {
+      // Redirect to the URL provided by next-auth
+      router.push(result.url);
+    } else {
+      // Fallback redirect to dashboard
+      router.replace('/dashboard');
     }
-  }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-800">
@@ -89,7 +93,9 @@ function page() {
                 </FormItem>
               )}
             />
-            <Button className='w-full' type="submit">Sign In</Button>
+            <Button className="w-full" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Signing In...' : 'Sign In'}
+            </Button>
           </form>
         </Form>
         <div className="text-center mt-4">
@@ -105,4 +111,4 @@ function page() {
   );
 }
 
-export default page
+export default SignInPage;

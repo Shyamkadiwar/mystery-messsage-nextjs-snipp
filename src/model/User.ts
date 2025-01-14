@@ -3,6 +3,7 @@ import mongoose, {Schema, Document} from "mongoose";
 // creating schemas
 
 export interface Message extends Document{ // creting an message interface, using document because at the last schema is stored in db in form of documnet also its like difing structure and using type script for type safty
+    _id : string;
     content: string;
     createdAt: Date;
 }

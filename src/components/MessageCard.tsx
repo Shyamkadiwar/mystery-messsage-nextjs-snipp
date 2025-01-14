@@ -20,12 +20,9 @@ import {
 import { Button } from './ui/button';
 import { useToast } from '@/hooks/use-toast'
 import { ApiResponse } from '@/types/ApiResponse';
+import { Message } from '@/model/User';
 
-type Message = {
-  _id: string; // Ensure it's a string
-  content: string;
-  createdAt: string; // Adjust as needed
-};
+
 
 type MessageCardProps = {
   message: Message;
