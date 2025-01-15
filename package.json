@@ -26,6 +26,8 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
+    "embla-carousel-autoplay": "^8.5.2",
+    "embla-carousel-react": "^8.5.2",
     "lucide-react": "^0.469.0",
     "mongoose": "^8.9.2",
     "next": "^15.1.2",
